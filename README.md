@@ -1,2 +1,2 @@
-# juegito-misterio
-un ejercicio de java y mysql basado en un juego de misterio
+# Misterio
+Juego de misterio en java y mysql
