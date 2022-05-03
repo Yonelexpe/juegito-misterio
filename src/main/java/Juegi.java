@@ -24,6 +24,10 @@ public class Juegi {
 	private static final String SQL_PREGUNTAR = "SELECT respuesta FROM persona_pregunta WHERE id_persona = 1 AND id_pregunta = 1;";
 	private static final String Private = null;// private static final int opcion_mirar = 1;
 	int mirar = 1;
+	private static final int OPCION_OBSERVAR = 1;
+	private static final int OPCION_PREGUNTAR = 2;
+	private static final int OPCION_RESOLVER = 3;
+	
 
 	public static void main(String[] args) {
 		
@@ -35,13 +39,13 @@ public class Juegi {
 			opciones = menu();
 	
 			switch (opciones) {
-			case 1:
+			case OPCION_OBSERVAR:
 				observar();
 				break;
-			case 2:
+			case OPCION_PREGUNTAR:
 				preguntar();
 				break;
-			case 3:
+			case OPCION_RESOLVER:
 				result();
 				break;
 			default:
@@ -56,6 +60,9 @@ public class Juegi {
 
 	private static void preguntar() {
 		// TODO Auto-generated method stub
+		
+		
+		
 		
 	}
 
