@@ -7,8 +7,7 @@ import java.util.Scanner;
 
 /**
  * intento de juego donde te mueves por los menus,leyendo las descripciones que
- * estan guardas en las descripcciones en mysql si los objetos empiezan por r ->
- * donde se guardan ls respuestas del usuario
+ * estan guardas en tablas de mysql. 
  * 
  * @author jaele
  *
@@ -64,11 +63,6 @@ public class Juegi {
 	private static void notas() {
 		int opciones;
 
-//		// ELIMINARNOTAS
-//		PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_ELIMINARNOTAS);
-//		// ELEGIRNOTAS
-//		
-
 		boolean repetir = true;
 		do {
 			opciones = menunotas();
@@ -97,48 +91,41 @@ public class Juegi {
 	}
 
 	private static void eliminarnotas() {
-		int respuesta =0;
-		int filas =0;
-	try (	Connection con = Conexion.getConnection();
-			PreparedStatement pst = con.prepareStatement(Modelo.SQL_ELIMINARNOTAS);){
-		System.out.println("que notas quieres eliminar\n");
-		vernotas();
-		respuesta = Integer.parseInt(sc.nextLine());
-		
-		pst.setInt(1, respuesta);
+		int respuesta = 0;
+		int filas = 0;
+		try (Connection con = Conexion.getConnection();
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ELIMINARNOTAS);) {
+			System.out.println("que notas quieres eliminar\n");
+			vernotas();
+			respuesta = Integer.parseInt(sc.nextLine());
 
-		filas = pst.executeUpdate();
+			pst.setInt(1, respuesta);
 
-		if (filas > 0) {
-			System.out.println("nota eliminada");
-		} else {
-			System.out.println("no se ha podido eliminar la nota");
+			filas = pst.executeUpdate();
+
+			if (filas > 0) {
+				System.out.println("nota eliminada");
+			} else {
+				System.out.println("no se ha podido eliminar la nota");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		
-		
-		
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-		
-		
-		
-		
+
 	}
 
 	private static void vernotas() {
 		try (Connection con = Conexion.getConnection();
 				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ELEGIRNOTAS);
-				ResultSet rs= pst.executeQuery();) {
+				ResultSet rs = pst.executeQuery();) {
 			while (rs.next()) {
 				String texto = rs.getString("titulo");
 				int idnotas = rs.getInt("id_notas");
 				System.out.printf("%-2s : %s \n\n", idnotas, texto);
-				
+
 			}
 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -200,7 +187,7 @@ public class Juegi {
 	private static void preguntar() {
 		boolean flag1 = true;
 		boolean flag2 = true;
-		boolean flag3 = true;
+	
 		int ridpe = 0;
 		int ridpre = 0;
 
@@ -287,7 +274,7 @@ public class Juegi {
 			} // while
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			System.out.println("error algo");
 		} // CATCH
 
@@ -298,8 +285,7 @@ public class Juegi {
 		int robje = 0;
 		boolean flag1 = true;
 		boolean flag2 = true;
-		boolean flag3 = true;
-
+		
 		try (Connection con = Conexion.getConnection();
 				// escenarios
 				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ESCENARIOS);
@@ -316,7 +302,7 @@ public class Juegi {
 
 				System.out.printf("%-2s : %s \n", id, hubi);
 
-				// TODO hacer exsecciones
+
 
 			} // rs.next
 
@@ -383,12 +369,12 @@ public class Juegi {
 
 				System.out.printf("%s \n\n", descri);
 
-				// TODO hacer exsecciones
+			
 
 			} // rs.next
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			e.printStackTrace();
 		}
 
