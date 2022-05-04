@@ -20,6 +20,17 @@ public class Modelo {
 /// SOLUCION
 	public static final String SQL_RESPUESTA = "SELECT asesino FROM solucion;";
 
+/// NOTAS
+	//TODO sustituir nº por ?
+	public static final String SQL_ADD_NOTAS = "INSERT INTO notas (titulo) VALUES (?);";
+	public static final String SQL_ELIMINARNOTAS = "DELETE FROM misterio.notas WHERE (id_notas = ?);";
+	public static final String SQL_ELEGIRNOTAS = "SELECT id_notas,titulo FROM notas ;";
+	
+	// no se usa // public static final String SQL_VERNOTAS = "SELECT titulo, apuntes FROM notas WHERE id_notas = ? ;";
+	
+	
+	
+	
 	public static String verEscenario(int idEscenario, int idObjeto) {
 
 		String resul = "*** NO EXISTEN Descripciones para el escenario " + idEscenario + " y objeto " + idObjeto;

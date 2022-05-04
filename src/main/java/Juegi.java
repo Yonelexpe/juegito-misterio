@@ -14,15 +14,19 @@ import java.util.Scanner;
  *
  */
 public class Juegi {
-	
+
 	static Scanner sc = new Scanner(System.in);
-	
-	
-	
+	/// NOTAS
+	private static final int OPCION_ADD = 1;
+	private static final int OPCION_VER = 2;
+	private static final int OPCION_ELIMINAR = 3;
+
+	/// MENU
 	int mirar = 1;
 	private static final int OPCION_OBSERVAR = 1;
 	private static final int OPCION_PREGUNTAR = 2;
 	private static final int OPCION_RESOLVER = 3;
+	private static final int OPCION_NOTAS = 4;
 
 	public static void main(String[] args) {
 
@@ -44,6 +48,9 @@ public class Juegi {
 				result();
 				repetir = false;
 				break;
+			case OPCION_NOTAS:
+				notas();
+				break;
 			default:
 				// salir
 				repetir = false;
@@ -53,6 +60,142 @@ public class Juegi {
 		} while (repetir);
 
 	}// main
+
+	private static void notas() {
+		int opciones;
+
+//		// ELIMINARNOTAS
+//		PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_ELIMINARNOTAS);
+//		// ELEGIRNOTAS
+//		
+
+		boolean repetir = true;
+		do {
+			opciones = menunotas();
+
+			switch (opciones) {
+			case OPCION_ADD:
+
+				anadirnotas();
+
+				break;
+			case OPCION_VER:
+				vernotas();
+				break;
+			case OPCION_ELIMINAR:
+				eliminarnotas();
+				break;
+
+			default:
+				// salir
+				repetir = false;
+				break;
+			}
+
+		} while (repetir);
+
+	}
+
+	private static void eliminarnotas() {
+		int respuesta =0;
+		int filas =0;
+	try (	Connection con = Conexion.getConnection();
+			PreparedStatement pst = con.prepareStatement(Modelo.SQL_ELIMINARNOTAS);){
+		System.out.println("que notas quieres eliminar\n");
+		vernotas();
+		respuesta = Integer.parseInt(sc.nextLine());
+		
+		pst.setInt(1, respuesta);
+
+		filas = pst.executeUpdate();
+
+		if (filas > 0) {
+			System.out.println("nota eliminada");
+		} else {
+			System.out.println("no se ha podido eliminar la nota");
+		}
+		
+		
+		
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+		
+		
+		
+		
+	}
+
+	private static void vernotas() {
+		try (Connection con = Conexion.getConnection();
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ELEGIRNOTAS);
+				ResultSet rs= pst.executeQuery();) {
+			while (rs.next()) {
+				String texto = rs.getString("titulo");
+				int idnotas = rs.getInt("id_notas");
+				System.out.printf("%-2s : %s \n\n", idnotas, texto);
+				
+			}
+
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private static void anadirnotas() {
+		String apunte = null;
+		int filas = 0;
+
+		try (Connection con = Conexion.getConnection();
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ADD_NOTAS);) {
+
+			System.out.println("¿Que es lo que quieres anotar?");
+			apunte = sc.nextLine();
+
+			pst.setString(1, apunte);
+
+			filas = pst.executeUpdate();
+
+			if (filas > 0) {
+				System.out.println("nota añadida");
+			} else {
+				System.out.println("no se ha podido añadir la nota");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} // trycatch
+	}
+
+	private static int menunotas() {
+		int x = 0;
+		boolean flat = true;
+
+		System.out.println("----------------------------------------------------");
+		System.out.println("-----   ¿Que quieres hacer?      -------------------");
+		System.out.println("----------------------------------------------------");
+		System.out.println(" 1 - Añadir notas");
+		System.out.println(" 2 - Ver notas");
+		System.out.println(" 3 - Eliminar notas");
+		System.out.println("----------------------------------------------------");
+		System.out.println(" 0 - Salir");
+		System.out.println("----------------------------------------------------");
+
+		do {
+			x = Integer.parseInt(sc.nextLine());
+			if (x > 3 || x < 0) {
+				System.out.println("error");
+			} else {
+				flat = false;
+			}
+
+		} while (flat);
+
+		return x;
+	}
 
 	private static void preguntar() {
 		boolean flag1 = true;
@@ -67,7 +210,7 @@ public class Juegi {
 				// pQue quieres preguntar
 				PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_QPREGUNTA);
 				// respuesta
-				PreparedStatement pst3 = con.prepareStatement(Modelo.SQL_PREGUNTA); 
+				PreparedStatement pst3 = con.prepareStatement(Modelo.SQL_PREGUNTA);
 				ResultSet rs1 = pst1.executeQuery();) {
 
 			System.out.println("A quien quieres preguntar");
@@ -158,11 +301,11 @@ public class Juegi {
 		boolean flag3 = true;
 
 		try (Connection con = Conexion.getConnection();
-				//escenarios
+				// escenarios
 				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ESCENARIOS);
-				//objetos
+				// objetos
 				PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_OBJETOS);
-				//descripcion
+				// descripcion
 				PreparedStatement pst3 = con.prepareStatement(Modelo.SQL_DESCRIPCION);
 				ResultSet rs = pst.executeQuery();) {
 
@@ -253,7 +396,7 @@ public class Juegi {
 
 	private static void result() {
 		// antonio seria la respuesta coreecta
-		String asesino=null;
+		String asesino = null;
 		try (Connection con = Conexion.getConnection();
 				PreparedStatement pst = con.prepareStatement(Modelo.SQL_RESPUESTA);
 				ResultSet rs = pst.executeQuery();
@@ -264,7 +407,7 @@ public class Juegi {
 
 			while (rs.next()) {
 
-				 asesino = rs.getString("asesino");
+				asesino = rs.getString("asesino");
 
 			} // rs
 
@@ -275,7 +418,7 @@ public class Juegi {
 				System.out.println("fallastes");
 			} // ifelse
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 
@@ -289,15 +432,16 @@ public class Juegi {
 		System.out.println("-----   ¿Que quieres hacer?      -------------------");
 		System.out.println("----------------------------------------------------");
 		System.out.println(" 1 - Mirar escenario");
-		System.out.println(" 2 - preguntar sospechoso");
-		System.out.println(" 3 - resolver");
+		System.out.println(" 2 - Preguntar sospechoso");
+		System.out.println(" 3 - Resolver");
+		System.out.println(" 4 - Notas");
 		System.out.println("----------------------------------------------------");
 		System.out.println(" 0 - Salir");
 		System.out.println("----------------------------------------------------");
 
 		do {
 			x = Integer.parseInt(sc.nextLine());
-			if (x > 3 || x < 0) {
+			if (x > 4 || x < 0) {
 				System.out.println("error");
 			} else {
 				flat = false;
