@@ -17,9 +17,6 @@ public class Juegi {
 	
 	static Scanner sc = new Scanner(System.in);
 	
-	private static final String SQL_INTRO = "SELECT intro FROM introduccion;";
-	private static final String SQL_MIRAR = "SELECT descripcion FROM objetos_escenarios WHERE id_escenarios = 2 AND id_objetos = 3;";
-	private static final String SQL_PREGUNTAR = "SELECT respuesta FROM persona_pregunta WHERE id_persona = 1 AND id_pregunta = 1;";
 	
 	
 	int mirar = 1;
@@ -66,14 +63,11 @@ public class Juegi {
 
 		try (Connection con = Conexion.getConnection();
 				// pregunta a quien
-				PreparedStatement pst1 = con.prepareStatement("SELECT id_persona,nombre FROM personas;");
-				// pregunta que quieres preguntar
-				PreparedStatement pst2 = con.prepareStatement("SELECT id_pregunta, texto FROM preguntas;");
+				PreparedStatement pst1 = con.prepareStatement(Modelo.SQL_AQUIEN);
+				// pQue quieres preguntar
+				PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_QPREGUNTA);
 				// respuesta
-				PreparedStatement pst3 = con.prepareStatement(
-						"SELECT respuesta, nombre FROM personas p, persona_pregunta pp, preguntas \r\n"
-								+ "WHERE p.id_persona=pp.id_persona AND pp.id_pregunta = preguntas.id_pregunta\r\n"
-								+ "AND p.id_persona =  ? AND preguntas.id_pregunta= ?  ;"); // TODO cambiar nº por ?
+				PreparedStatement pst3 = con.prepareStatement(Modelo.SQL_PREGUNTA); 
 				ResultSet rs1 = pst1.executeQuery();) {
 
 			System.out.println("A quien quieres preguntar");
@@ -137,7 +131,7 @@ public class Juegi {
 
 	private static void verIntro() {
 		try (Connection con = Conexion.getConnection(); // mostar introduccion
-				PreparedStatement pst = con.prepareStatement(SQL_INTRO);
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_INTRO);
 				ResultSet rs = pst.executeQuery();) {
 			while (rs.next()) {
 
@@ -164,12 +158,12 @@ public class Juegi {
 		boolean flag3 = true;
 
 		try (Connection con = Conexion.getConnection();
-				PreparedStatement pst = con.prepareStatement(
-						"SELECT hubicacion, id_escenarios FROM escenarios  ORDER BY id_escenarios asc;");
-				PreparedStatement pst2 = con.prepareStatement(
-						"SELECT o.id_objetos, objeto FROM objetos_escenarios oe , objetos o WHERE oe.id_objetos= o.id_objetos AND oe.id_escenarios = ? ;");
-				PreparedStatement pst3 = con.prepareStatement(
-						"SELECT descripcion FROM objetos_escenarios oe , objetos o WHERE oe.id_objetos= o.id_objetos AND oe.id_escenarios = ?  AND oe.id_objetos= ? ;");
+				//escenarios
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_ESCENARIOS);
+				//objetos
+				PreparedStatement pst2 = con.prepareStatement(Modelo.SQL_OBJETOS);
+				//descripcion
+				PreparedStatement pst3 = con.prepareStatement(Modelo.SQL_DESCRIPCION);
 				ResultSet rs = pst.executeQuery();) {
 
 			System.out.println("¿donde quieres buscar?");
@@ -261,7 +255,7 @@ public class Juegi {
 		// antonio seria la respuesta coreecta
 		String asesino=null;
 		try (Connection con = Conexion.getConnection();
-				PreparedStatement pst = con.prepareStatement("SELECT asesino FROM solucion;");
+				PreparedStatement pst = con.prepareStatement(Modelo.SQL_RESPUESTA);
 				ResultSet rs = pst.executeQuery();
 
 		) {
