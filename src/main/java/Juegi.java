@@ -3,10 +3,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-import javax.management.loading.PrivateClassLoader;
-
-import com.mysql.jdbc.RowDataStatic;
-
 //import com.elorrieta.clase.Conexion; //ni idea de porque
 
 /**
@@ -18,11 +14,14 @@ import com.mysql.jdbc.RowDataStatic;
  *
  */
 public class Juegi {
+	
 	static Scanner sc = new Scanner(System.in);
+	
 	private static final String SQL_INTRO = "SELECT intro FROM introduccion;";
 	private static final String SQL_MIRAR = "SELECT descripcion FROM objetos_escenarios WHERE id_escenarios = 2 AND id_objetos = 3;";
 	private static final String SQL_PREGUNTAR = "SELECT respuesta FROM persona_pregunta WHERE id_persona = 1 AND id_pregunta = 1;";
-	private static final String Private = null;// private static final int opcion_mirar = 1;
+	
+	
 	int mirar = 1;
 	private static final int OPCION_OBSERVAR = 1;
 	private static final int OPCION_PREGUNTAR = 2;
@@ -46,6 +45,7 @@ public class Juegi {
 				break;
 			case OPCION_RESOLVER:
 				result();
+				repetir = false;
 				break;
 			default:
 				// salir
@@ -61,19 +61,19 @@ public class Juegi {
 		boolean flag1 = true;
 		boolean flag2 = true;
 		boolean flag3 = true;
-		int ridpe =0;
-		int ridpre =0;
-		
+		int ridpe = 0;
+		int ridpre = 0;
+
 		try (Connection con = Conexion.getConnection();
 				// pregunta a quien
 				PreparedStatement pst1 = con.prepareStatement("SELECT id_persona,nombre FROM personas;");
-				 //pregunta que quieres preguntar
+				// pregunta que quieres preguntar
 				PreparedStatement pst2 = con.prepareStatement("SELECT id_pregunta, texto FROM preguntas;");
-				//respuesta
+				// respuesta
 				PreparedStatement pst3 = con.prepareStatement(
 						"SELECT respuesta, nombre FROM personas p, persona_pregunta pp, preguntas \r\n"
 								+ "WHERE p.id_persona=pp.id_persona AND pp.id_pregunta = preguntas.id_pregunta\r\n"
-								+ "AND p.id_persona =  ? AND preguntas.id_pregunta= ?  ;");//TODO cambiar nº por ?
+								+ "AND p.id_persona =  ? AND preguntas.id_pregunta= ?  ;"); // TODO cambiar nº por ?
 				ResultSet rs1 = pst1.executeQuery();) {
 
 			System.out.println("A quien quieres preguntar");
@@ -84,7 +84,7 @@ public class Juegi {
 			}
 			// elegir id_persona
 			while (flag1) {
-				 ridpe = Integer.parseInt(sc.nextLine());
+				ridpe = Integer.parseInt(sc.nextLine());
 
 				if (ridpe < 1 || ridpe > 3) {
 					System.out.println("error introduce un numero correcto");
@@ -92,22 +92,20 @@ public class Juegi {
 					flag1 = false;
 				} // fin else
 			} // finwhile
-			
-			
+
 			System.out.println("que quieres preguntarle");
 			ResultSet rs2 = pst2.executeQuery();
-			
+
 			while (rs2.next()) {
 				String texto = rs2.getString("texto");
 				int idpregun = rs2.getInt("id_pregunta");
 				System.out.printf("%-2s : %s \n", idpregun, texto);
 			}
-			
-			//elegir pregunta
-			
-			
+
+			// elegir pregunta
+
 			while (flag2) {
-				 ridpre = Integer.parseInt(sc.nextLine());
+				ridpre = Integer.parseInt(sc.nextLine());
 
 				if (ridpre < 1 || ridpre > 1) {
 					System.out.println("error introduce un numero correcto");
@@ -115,26 +113,21 @@ public class Juegi {
 					flag2 = false;
 				} // fin else
 			} // finwhile
-			
-			
+
 			// mostrar resultados
-			
-	pst3.setInt(1, ridpe);
-	pst3.setInt(2, ridpre);
-	
-			ResultSet rs3= pst3.executeQuery();
-			
+
+			pst3.setInt(1, ridpe);
+			pst3.setInt(2, ridpre);
+
+			ResultSet rs3 = pst3.executeQuery();
+
 			while (rs3.next()) {
-				
+
 				String respuesta = rs3.getString("respuesta");
 				String perso = rs3.getString("nombre");
-					System.out.printf("%s te contesta: \n %s\n\n",perso,respuesta);
-					
-					
-				
+				System.out.printf("%s te contesta: \n %s\n\n", perso, respuesta);
+
 			}
-			
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -266,9 +259,9 @@ public class Juegi {
 
 	private static void result() {
 		// antonio seria la respuesta coreecta
-
+		String asesino=null;
 		try (Connection con = Conexion.getConnection();
-				PreparedStatement pst = con.prepareStatement("SELECT asesino FROM respuesta;");
+				PreparedStatement pst = con.prepareStatement("SELECT asesino FROM solucion;");
 				ResultSet rs = pst.executeQuery();
 
 		) {
@@ -277,18 +270,18 @@ public class Juegi {
 
 			while (rs.next()) {
 
-				String asesino = rs.getString("asesino");
+				 asesino = rs.getString("asesino");
 
-				if (asesino.equals(respuesta)) {// no se como hacer esto
-					System.out.println("enhorabuena");
+			} // rs
 
-				} else {
-					System.out.println("fallastes");
-				}
-			}
+			if (asesino.equalsIgnoreCase(respuesta)) {// no se como hacer esto
+				System.out.println("enhorabuena");
 
+			} else {
+				System.out.println("fallastes");
+			} // ifelse
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			e.printStackTrace();
 		}
 
