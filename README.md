@@ -4,11 +4,11 @@ Por falta de habilidad escritora no se pudo hacer un misterio que se pueda resol
 En una base de datos creada con mysql es donde se mete información como habitaciones, objetos, declaraciones, etc. 
 Por java te describe por texto las opciones que tienes para obtener mas información y poder dar una respuesta.
 
-## diagrama de java
+## diagrama de flujo
 El siguiente diagrama muestra como esta estructurado las rutas para si se quiere modificar y añadir lo que se quiera. Por ejemplo 
 cambiar los nombres de los personajes , añadir preguntas o texto.
 
-![diagrama java](diagramabase.png)
+[click para ver diagrama java](https://raw.githubusercontent.com/Yonelexpe/juegito-misterio/main/diagramabase.png)
 
 ## Configuración de la base de datos
 
